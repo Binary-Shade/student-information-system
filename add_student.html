@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="addstudent.css">
+<title>student information system</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>Admin</h2>
+            <ul>
+                <li><a href="admin_dashboard.html">Home</a></li>
+                <li><a href="student_details.html">Student Details</a></li>
+                <li><a href="add_student.html">Add Student</a></li>
+                <li><a href="index.html">about</a></li>
+            </ul>
+        </div>
+        <div class="main_content">
+            <div class = "main"> 
+            <form id="studentForm" action="#" method="post">
+                <h3 class="name">Roll Number</h3>
+                <input class="cinroll" type="text" id="roll" name="roll" required>
+            
+                <div id="name">
+                    <h3 class="name">Name</h3>
+                    <h4 class="cfirst">First name</h4>
+                    <input class="cinfirst" type="text" id="first" name="first" required>
+                    <h4 class="clast">Last name</h4>
+                    <input class="cinlast" type="text" id="last" name="last">
+                </div>
+            
+            
+                <h3 class="name">Course</h3>
+                <select class="courseopt" id="course" name="course" required>
+                    <option disabled="disabled" selected="selected">--choose one--</option>
+                    <option value="B.E">B.E</option>
+                    <option value="M.E">M.E</option>
+                    <option value="B.Sc">B.SC</option>
+                </select>
+            
+                <h3 class="name">branch</h3>
+                <select class="branchopt" id="branch" name="branch" required>
+                    <option disabled="disabled" selected="selected">--choose one--</option>
+                    <option value="computer science">computer science engineering</option>
+                    <option value="electrical">electrical engineering</option>
+                    <option value="civil">civil engineering</option>
+                    <option value="mechanical">mechanical engineering</option>
+                </select>
+            
+                <div id="btn">
+                    <button class="btn" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('studentForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            var formData = {
+                roll: document.getElementById('roll').value,
+                first: document.getElementById('first').value,
+                last: document.getElementById('last').value,
+                course: document.getElementById('course').value,
+                branch: document.getElementById('branch').value
+            };
+
+            var existingData = localStorage.getItem('studentDetails');
+            var allStudentDetails = existingData ? JSON.parse(existingData) : [];
+
+            if (!Array.isArray(allStudentDetails)) {
+                // If the existing data is not an array, initialize an empty array
+                allStudentDetails = [];
+            }
+
+            allStudentDetails.push(formData);
+            localStorage.setItem('studentDetails', JSON.stringify(allStudentDetails));
+
+            alert('Details saved successfully!');
+        });
+    </script>
+</body>
+</html>

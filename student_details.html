@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="studentdetails.css">
+    <meta charset="ISO-8859-1">
+    <title>student information system</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>Admin</h2>
+            <ul>
+                <li><a href="admin_dashboard.html">Home</a></li>
+                <li><a href="detail.html">Student Details</a></li>
+                <li><a href="add_student.html">Add Student</a></li>
+                <li><a href="index.html">about</a></li>
+            </ul>
+        </div><!-- sidebar -->
+        <div class="main_content">
+            <h1 class="stext">Student details</h1>
+            <hr>
+            <div class="main">
+                <div class="table_style">
+                    <table id="table">
+                        <thead>
+                            <tr>
+                                <th>Roll number</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>Branch</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentDataBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div><!-- main -->
+        </div><!-- main_content -->
+    </div><!-- wrapper -->
+
+    <!-- Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Student Details</h2>
+            <form id="editForm">
+                <input type="hidden" id="editIndex">
+                <h3 class="name">Roll Number</h3>
+                <input class="cinroll" type="text" id="editRoll" required>
+            
+                <div id="name">
+                    <h3 class="name">Name</h3>
+                    <h4 class="cfirst">First name</h4>
+                    <input class="cinfirst" type="text" id="editFirst" required>
+                    <h4 class="clast">Last name</h4>
+                    <input class="cinlast" type="text" id="editLast">
+                </div>
+            
+                <h3 class="name">Course</h3>
+                <select class="courseopt" id="editCourse" required>
+                    <option disabled="disabled" selected="selected">--choose one--</option>
+                    <option value="B.E">B.E</option>
+                    <option value="M.E">M.E</option>
+                    <option value="B.Sc">B.SC</option>
+                </select>
+            
+                <h3 class="name">Branch</h3>
+                <select class="branchopt" id="editBranch" required>
+                    <option disabled="disabled" selected="selected">--choose one--</option>
+                    <option value="computer science">computer science engineering</option>
+                    <option value="electrical">electrical engineering</option>
+                    <option value="civil">civil engineering</option>
+                    <option value="mechanical">mechanical engineering</option>
+                </select>
+            
+                <div id="btn">
+                    <button class="btn" type="submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        const modal = document.querySelector('.modal');
+        document.addEventListener('DOMContentLoaded', function() {
+            var storedData = localStorage.getItem('studentDetails');
+            if (storedData) {
+                var students = JSON.parse(storedData);
+                var tableBody = document.getElementById('studentDataBody');
+                
+                students.forEach(function(student, index) {
+                    var row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${student.roll}</td>
+                        <td>${student.first} ${student.last}</td>
+                        <td>${student.course}</td>
+                        <td>${student.branch}</td>
+                        <td>
+                            <button onclick="editStudent(${index})">Edit</button>
+                            <button onclick="deleteStudent(${index})">Delete</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                console.log('No student details found in local storage.');
+            }
+        });
+
+        // Edit student function
+        function editStudent(index) {
+            modal.classList.toggle('.show');
+            var students = JSON.parse(localStorage.getItem('studentDetails'));
+            var student = students[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('editRoll').value = student.roll;
+            document.getElementById('editFirst').value = student.first;
+            document.getElementById('editLast').value = student.last;
+            document.getElementById('editCourse').value = student.course;
+            document.getElementById('editBranch').value = student.branch;
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        // Delete student function
+        function deleteStudent(index) {
+            var students = JSON.parse(localStorage.getItem('studentDetails'));
+            students.splice(index, 1);
+            localStorage.setItem('studentDetails', JSON.stringify(students));
+            location.reload(); // Reload the page to reflect changes
+        }
+
+        // Close modal when clicking on the close button
+        document.getElementsByClassName('close')[0].addEventListener('click', function() {
+            document.getElementById('editModal').style.display = 'none';
+        });
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        // Update student details on form submission
+        document.getElementById('editForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            var index = document.getElementById('editIndex').value;
+            var students = JSON.parse(localStorage.getItem('studentDetails'));
+            students[index] = {
+                roll: document.getElementById('editRoll').value,
+                first: document.getElementById('editFirst').value,
+                last: document.getElementById('editLast').value,
+                course: document.getElementById('editCourse').value,
+                branch: document.getElementById('editBranch').value
+            };
+            localStorage.setItem('studentDetails', JSON.stringify(students));
+            location.reload(); // Reload the page to reflect changes
+        });
+    </script>
+</body>
+</html>
